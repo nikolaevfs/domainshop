@@ -49,4 +49,20 @@ public class DomainshopApplicationTests {
                 .andExpect(jsonPath("$[2].price").value(15.99))
                 .andExpect(jsonPath("$[2].available").value(true));
     }
+
+    @Test
+    public void testFullyNotExisting() throws Exception {
+
+        this.mockMvc.perform(get("/domains/available?name=fullbusy"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tld").value("com"))
+                .andExpect(jsonPath("$[0].price").value(8.99))
+                .andExpect(jsonPath("$[0].available").value(false))
+                .andExpect(jsonPath("$[1].tld").value("net"))
+                .andExpect(jsonPath("$[1].price").value(9.99))
+                .andExpect(jsonPath("$[1].available").value(false))
+                .andExpect(jsonPath("$[2].tld").value("club"))
+                .andExpect(jsonPath("$[2].price").value(15.99))
+                .andExpect(jsonPath("$[2].available").value(false));
+    }
 }
