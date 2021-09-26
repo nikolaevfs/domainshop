@@ -1,6 +1,6 @@
 package com.example.domainshop.controller;
 
-import com.example.domainshop.dto.FilterAvailableDto;
+import com.example.domainshop.dto.ProcessedDomain;
 import com.example.domainshop.model.Tld;
 import com.example.domainshop.service.DomainService;
 import com.example.domainshop.service.TldService;
@@ -24,15 +24,16 @@ public class DomainController {
 
 
     @GetMapping("/domains/available")
-    public Object check(FilterAvailableDto filterAvailableDto) {
+    public Object check(ProcessedDomain processedDomain) {
         // TODO: Implementation starting point
 
         List<Map<Object ,Object>> response = new ArrayList<>();
         String domain=new String();
+        List<Tld> orderedTlds = new ArrayList<>(tldService.getAllTldsOrdered(processedDomain));
 
-        for(Tld tld : tldService.getAllTlds()){
+        for(Tld tld : orderedTlds){
             Map<Object ,Object> record = new HashMap<>();
-            domain=filterAvailableDto.getName() + "." + tld.getName();
+            domain= processedDomain.getName() + "." + tld.getName();
 
             System.out.println(domain);
             record.put("domain", domain);

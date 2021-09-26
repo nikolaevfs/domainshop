@@ -1,6 +1,5 @@
 package com.example.domainshop.service;
 
-import com.example.domainshop.dto.FilterAvailableDto;
 import com.example.domainshop.model.Domain;
 import com.example.domainshop.repository.DomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
