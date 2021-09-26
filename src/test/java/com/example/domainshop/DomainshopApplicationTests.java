@@ -51,7 +51,7 @@ public class DomainshopApplicationTests {
     }
 
     @Test
-    public void testFullyNotExisting() throws Exception {
+    public void testFullyBusy() throws Exception {
 
         this.mockMvc.perform(get("/domains/available?name=fullbusy"))
                 .andDo(print()).andExpect(status().isOk())
@@ -146,4 +146,68 @@ public class DomainshopApplicationTests {
                 .andExpect(jsonPath("$[2].price").value(9.99))
                 .andExpect(jsonPath("$[2].available").value(true));
     }
+
+    @Test
+    public void testPriceFilter() throws Exception {
+
+        this.mockMvc.perform(get("/domains/available?name=existing&sortingField=tld&filterField=price&lowestPrice=7.0&highestPrice=10.0"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tld").value("com"))
+                .andExpect(jsonPath("$[0].price").value(8.99))
+                .andExpect(jsonPath("$[0].available").value(false))
+                .andExpect(jsonPath("$[1].tld").value("net"))
+                .andExpect(jsonPath("$[1].price").value(9.99))
+                .andExpect(jsonPath("$[1].available").value(true));
+    }
+
+    @Test
+    public void testPriceFilterWithoutLowest() throws Exception {
+
+        this.mockMvc.perform(get("/domains/available?name=existing&sortingField=tld&filterField=price&highestPrice=10.0"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tld").value("com"))
+                .andExpect(jsonPath("$[0].price").value(8.99))
+                .andExpect(jsonPath("$[0].available").value(false))
+                .andExpect(jsonPath("$[1].tld").value("net"))
+                .andExpect(jsonPath("$[1].price").value(9.99))
+                .andExpect(jsonPath("$[1].available").value(true));
+    }
+
+    @Test
+    public void testPriceFilterWithoutHighest() throws Exception {
+
+        this.mockMvc.perform(get("/domains/available?name=existing&sortingField=tld&filterField=price&lowestPrice=7.0"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tld").value("club"))
+                .andExpect(jsonPath("$[0].price").value(15.99))
+                .andExpect(jsonPath("$[0].available").value(true))
+                .andExpect(jsonPath("$[1].tld").value("com"))
+                .andExpect(jsonPath("$[1].price").value(8.99))
+                .andExpect(jsonPath("$[1].available").value(false))
+                .andExpect(jsonPath("$[2].tld").value("net"))
+                .andExpect(jsonPath("$[2].price").value(9.99))
+                .andExpect(jsonPath("$[2].available").value(true));
+    }
+
+    @Test
+    public void testPriceFilterWithoutBorders() throws Exception {
+
+        this.mockMvc.perform(get("/domains/available?name=existing&sortingField=tld&filterField=price&lowestPrice=7.0"))
+                .andDo(print()).andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void testFilterTlds() throws Exception {
+
+        this.mockMvc.perform(get("/domains/available?name=new&filterField=tld&suitableTlds[]=com&suitableTlds[]=net"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tld").value("com"))
+                .andExpect(jsonPath("$[0].price").value(8.99))
+                .andExpect(jsonPath("$[0].available").value(true))
+                .andExpect(jsonPath("$[1].tld").value("net"))
+                .andExpect(jsonPath("$[1].price").value(9.99))
+                .andExpect(jsonPath("$[1].available").value(true));
+    }
+
 }
