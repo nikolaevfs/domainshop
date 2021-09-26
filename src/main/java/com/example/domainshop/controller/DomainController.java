@@ -27,20 +27,21 @@ public class DomainController {
     public Object check(ProcessedDomain processedDomain) {
         // TODO: Implementation starting point
 
-        List<Map<Object ,Object>> response = new ArrayList<>();
-        String domain=new String();
+        List<Map<Object, Object>> response = new ArrayList<>();
+        StringBuilder domain = new StringBuilder("");
+
         List<Tld> orderedTlds = new ArrayList<>(tldService.getAllTldsOrdered(processedDomain));
 
-        for(Tld tld : orderedTlds){
-            Map<Object ,Object> record = new HashMap<>();
-            domain= processedDomain.getName() + "." + tld.getName();
+        for (Tld tld : orderedTlds) {
+            Map<Object, Object> record = new HashMap<>();
+            domain.append(processedDomain.getName()).append(".").append(tld.getName());
 
-            System.out.println(domain);
             record.put("domain", domain);
             record.put("tld", tld.getName());
-            record.put("available", domainService.domainISFree(domain));
+            record.put("available", domainService.domainISFree(domain.toString()));
             record.put("price", tld.getPrice());
             response.add(record);
+            domain = new StringBuilder("");
         }
 
         System.out.println(response);
